@@ -1,0 +1,7 @@
+name: MTools
+version: @version@-@apiversion@
+description: A plugin to create and configure custom tools
+authors: [Merlin Reichwald]
+website: https://github.com/Merlin-R/MTools
+
+main: me.reichwald.spigot.mtools.MTools
