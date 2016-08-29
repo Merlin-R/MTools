@@ -2,6 +2,7 @@ package me.reichwald.spigot.mtools.util;
 
 import java.io.ByteArrayOutputStream;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -31,7 +32,7 @@ public class ItemUtils
     StringBuilder sb = new StringBuilder();
     
     for ( byte b : bytes )
-      sb.append( "§" ).append( Integer.toHexString( b / 16 ) ).append( "&" ).append( Integer.toHexString( b % 16 ) );
+      sb.append( "§" ).append( Integer.toHexString( b / 16 ) ).append( "§" ).append( Integer.toHexString( b % 16 ) );
     
     return sb.toString();
   }
@@ -40,13 +41,11 @@ public class ItemUtils
   {
     YamlConfiguration yaml = new YamlConfiguration();
     yaml.set( "item", stack );
-    
     return yaml.saveToString();
   }
   
   public static ItemStack deserialize( String string )
   {
-    
     YamlConfiguration yaml = new YamlConfiguration();
     try
     {

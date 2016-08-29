@@ -7,12 +7,14 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -220,7 +222,7 @@ public class MTools extends JavaPlugin implements Listener
     }
   }
   
-  
+  @EventHandler(priority=EventPriority.MONITOR)
   public void digest( InventoryCloseEvent event )
   {
     Player player = ( Player ) event.getPlayer();
@@ -246,7 +248,7 @@ public class MTools extends JavaPlugin implements Listener
     return VanillaActions.BREAK_BLOCK.canExecute( player, item, block );
   }
   
-  Map<Player, BlockTraceData> blockTraceData = Maps.newHashMap();
-  Map<Player, Boolean>        eventBlock     = Maps.newHashMap();
-  Map<Player, ItemStack>      toolsUsed      = Maps.newHashMap();
+  Map<Player, BlockTraceData> blockTraceData     = Maps.newHashMap();
+  Map<Player, Boolean>        eventBlock         = Maps.newHashMap();
+  Map<Player, ItemStack>      toolsUsed          = Maps.newHashMap();
 }

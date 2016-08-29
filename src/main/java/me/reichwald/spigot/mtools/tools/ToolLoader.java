@@ -89,6 +89,7 @@ public class ToolLoader
         return new LinkedList<String>();
       }
     };
+    bag.register();
     
     /*
     FileConfiguration cfg = MTools.CFG;
