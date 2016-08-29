@@ -46,7 +46,10 @@ public class ReflectHelper
   {
     LinkedList<Class<?>> classes = new LinkedList<Class<?>>();
     for ( Object o : objects )
-      classes.add( o.getClass() );
+      if ( o instanceof ReflectObject )
+        classes.add( ((ReflectObject) o).getWrappedClass() );
+      else
+        classes.add( o.getClass() );
     return classes.toArray( new Class<?>[ classes.size() ] );
   }
   

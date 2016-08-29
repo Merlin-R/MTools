@@ -59,4 +59,15 @@ public class ReflectObject implements IReflectWrapper
     return clazz.callMethod( name, wrapped, args );
   }
   
+  public ReflectObject wrapAs( Class<?> clazz )
+  {
+    return new ReflectObject( wrapped, new ReflectClass( clazz ) );
+  }
+
+
+  public Class<?> getWrappedClass()
+  {
+    return clazz.get();
+  }
+  
 }

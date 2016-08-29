@@ -23,7 +23,7 @@ public class ReflectClass implements IReflectWrapper
     try
     {
       return new ReflectObject(
-          wrapped.getMethod( name, ReflectHelper.getObjectClasses( unwrapped ) ).invoke( instance, unwrapped ), this
+          wrapped.getMethod( name, ReflectHelper.getObjectClasses( args ) ).invoke( instance, unwrapped )
       );
     }
     catch ( Exception e )
