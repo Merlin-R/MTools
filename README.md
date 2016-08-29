@@ -1,6 +1,7 @@
-MTools
------------------------------------------------------------------
-MTools is an advanced tool and item creation plugin for Spigot by **Merlin Reichwald (Venesus)** for the Chroma Hills Server.
+#MTools
+MTools is an advanced tool and item creation plugin for Spigot by **Merlin Reichwald (Venesus)** for the [Chroma Hills Server](http://chromahills.co.uk/).
+
+
 
 # Features
 MTools offers a vast amount of configuration options:
