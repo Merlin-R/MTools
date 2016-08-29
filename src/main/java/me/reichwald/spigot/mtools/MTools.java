@@ -2,6 +2,7 @@
 package me.reichwald.spigot.mtools;
 
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.bukkit.entity.Player;
@@ -18,6 +19,8 @@ import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.collect.Maps;
+
+import me.reichwald.spigot.mtools.util.ColourUtil;
 
 
 
@@ -86,6 +89,11 @@ public class MTools extends JavaPlugin implements Listener
   @EventHandler
   public void digest( PlayerInteractEvent event )
   {
+    String orig = event.getItem().getType().name();
+    String enc = ColourUtil.encodeColour( orig, "§a" + orig );
+    String dec = ColourUtil.decodeColour( enc );
+    
+    Arrays.asList( orig, enc, dec ).forEach( event.getPlayer()::sendMessage );
     
   }
   
