@@ -1,4 +1,6 @@
+
 package me.reichwald.spigot.mtools;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +13,6 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -26,24 +27,29 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.collect.Maps;
 
-import me.reichwald.spigot.mtools.actions.VanillaActions;
 import me.reichwald.spigot.mtools.blocks.BlockTraceData;
 import me.reichwald.spigot.mtools.tools.AbstractTool;
 import me.reichwald.spigot.mtools.tools.InventoryTool;
 import me.reichwald.spigot.mtools.tools.ToolLoader;
+import me.reichwald.spigot.mtools.unsafe.VanillaActions;
+
 
 public class MTools extends JavaPlugin implements Listener
 {
-  public static FileConfiguration CFG; 
-  public static Server SERVER;
+  
+  public static FileConfiguration CFG;
+  public static Server            SERVER;
+  
   
   @Override
   public void onEnable()
   {
     CFG = getConfig();
-    try {
+    try
+    {
       createCfg();
-    } catch ( IOException e )
+    }
+    catch ( IOException e )
     {
       getLogger().log( Level.SEVERE, "Could not generate default configuration file, aborting.", e );
       setEnabled( false );
@@ -63,18 +69,19 @@ public class MTools extends JavaPlugin implements Listener
     
   }
   
+  
   private void createCfg() throws IOException, InvalidConfigurationException
   {
-    File confFile = new File( getDataFolder(), "config.yml");
+    File confFile = new File( getDataFolder(), "config.yml" );
     if ( !confFile.exists() )
     {
       confFile.getParentFile().mkdirs();
       CFG.options().copyDefaults( true );
       CFG.save( confFile );
     }
-    else
-      CFG.load( confFile );
+    else CFG.load( confFile );
   }
+  
   
   @Override
   public void onDisable()
@@ -83,20 +90,24 @@ public class MTools extends JavaPlugin implements Listener
     blockTraceData.clear();
   }
   
+  
   private boolean isLocked( Player player )
   {
     return eventBlock.getOrDefault( player, false );
   }
+  
   
   private void lock( Player player )
   {
     eventBlock.put( player, true );
   }
   
+  
   private void unlock( Player player )
   {
     eventBlock.remove( player );
   }
+  
   
   @EventHandler
   public void digest( BlockBreakEvent event )
@@ -116,10 +127,12 @@ public class MTools extends JavaPlugin implements Listener
       else
       {
         // Workaround until PlayerItemDamageEvent is actually fired
-        // digest( new PlayerItemDamageEvent( player, stack, stack.getDurability() ) );
+        // digest( new PlayerItemDamageEvent( player, stack,
+        // stack.getDurability() ) );
       }
     }
   }
+  
   
   @EventHandler
   public void digest( PlayerItemBreakEvent event )
@@ -127,9 +140,9 @@ public class MTools extends JavaPlugin implements Listener
     Player player = event.getPlayer();
     ItemStack stack = event.getBrokenItem();
     AbstractTool tool = AbstractTool.byItemStack( stack );
-    if ( tool != null )
-      tool.onItemBreak( player, stack, event );
+    if ( tool != null ) tool.onItemBreak( player, stack, event );
   }
+  
   
   @EventHandler
   public void digest( PlayerItemDamageEvent event )
@@ -137,23 +150,23 @@ public class MTools extends JavaPlugin implements Listener
     Player player = event.getPlayer();
     ItemStack stack = event.getItem();
     AbstractTool tool = AbstractTool.byItemStack( stack );
-    if ( tool != null )
-      tool.digest( player, stack, event );
+    if ( tool != null ) tool.digest( player, stack, event );
   }
+  
   
   @EventHandler
   public void digest( PlayerInteractEntityEvent event )
   {
     Player player = event.getPlayer();
-    ItemStack stack = event.getHand() == EquipmentSlot.HAND ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
+    ItemStack stack = event.getHand() == EquipmentSlot.HAND ? player.getInventory().getItemInMainHand()
+        : player.getInventory().getItemInOffHand();
     AbstractTool tool = AbstractTool.byItemStack( stack );
-    if ( tool != null )
-      if ( !isLocked( player ) )
-      {
-        lock( player );
-        tool.onRightClickEntity( player, stack, event );
-        unlock( player );
-      }
+    if ( tool != null ) if ( !isLocked( player ) )
+    {
+      lock( player );
+      tool.onRightClickEntity( player, stack, event );
+      unlock( player );
+    }
   }
   
   
@@ -162,18 +175,18 @@ public class MTools extends JavaPlugin implements Listener
   {
     if ( event.getDamager() instanceof Player )
     {
-      Player player = (Player) event.getDamager();
+      Player player = ( Player ) event.getDamager();
       ItemStack stack = toolsUsed.getOrDefault( player, player.getInventory().getItemInMainHand() );
       AbstractTool tool = AbstractTool.byItemStack( stack );
-      if ( tool != null )
-        if ( !isLocked( player ) )
-        {
-          lock( player );
-          tool.onLeftClickEntity( player, stack, event );
-          unlock( player );
-        }
+      if ( tool != null ) if ( !isLocked( player ) )
+      {
+        lock( player );
+        tool.onLeftClickEntity( player, stack, event );
+        unlock( player );
+      }
     }
   }
+  
   
   @EventHandler
   public void digest( PlayerInteractEvent event )
@@ -182,8 +195,7 @@ public class MTools extends JavaPlugin implements Listener
     ItemStack stack = event.getItem();
     AbstractTool tool = AbstractTool.byItemStack( stack );
     toolsUsed.put( player, stack );
-    if ( tool != null )
-    switch ( event.getAction() )
+    if ( tool != null ) switch ( event.getAction() )
     {
     case LEFT_CLICK_AIR:
       tool.onLeftClickAir( player, stack, event, blockTraceData.get( player ) );
@@ -208,30 +220,33 @@ public class MTools extends JavaPlugin implements Listener
     }
   }
   
+  
   public void digest( InventoryCloseEvent event )
   {
-    Player player = (Player) event.getPlayer();
+    Player player = ( Player ) event.getPlayer();
     ItemStack stack = toolsUsed.getOrDefault( player, player.getInventory().getItemInMainHand() );
     AbstractTool tool = AbstractTool.byItemStack( stack );
     if ( tool != null && tool instanceof InventoryTool )
     {
-      InventoryTool iTool = ((InventoryTool) tool);
+      InventoryTool iTool = ( ( InventoryTool ) tool );
       if ( event.getInventory().getTitle().equals( iTool.getInventoryTitle() ) )
         iTool._inventoryClose( player, stack, event );
     }
   }
+  
   
   public static void playerBreakBlock( Player player, ItemStack item, Block block )
   {
     VanillaActions.BREAK_BLOCK.execute( player, item, block );
   }
   
+  
   public static boolean canPlayerBreakBlock( Player player, ItemStack item, Block block )
   {
     return VanillaActions.BREAK_BLOCK.canExecute( player, item, block );
   }
   
-  Map<Player, BlockTraceData> blockTraceData = Maps.newHashMap(); 
-  Map<Player, Boolean> eventBlock = Maps.newHashMap();
-  Map<Player, ItemStack> toolsUsed = Maps.newHashMap(); 
+  Map<Player, BlockTraceData> blockTraceData = Maps.newHashMap();
+  Map<Player, Boolean>        eventBlock     = Maps.newHashMap();
+  Map<Player, ItemStack>      toolsUsed      = Maps.newHashMap();
 }
